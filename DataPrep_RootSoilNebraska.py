@@ -2,14 +2,9 @@
 # coding: utf-8
 
 # MIRZ data pre-processing for input into clustering and IT algorithm
+
+#original data source: https://www.hydroshare.org/resource/405c8669069147b690c04b7063cad6ce/
  
-# In[0]:
-# import os
-# wd = os.getcwd()  # Prints the current working directory
-# print(wd)
-# os.chdir('C:/Users/ddbbs/Documents/Postdoc/CINet-dominant-balance-main (1)/CINet-dominant-balance-main')  # Provide the new path here
-# wd = os.getcwd()  # Prints the current working directory
-# print(wd)
 
 # In[1]:
 

@@ -6,6 +6,17 @@
 
 #Hourly version of flux tower data
 
+#sites: 
+#GC (Goose Creek flux tower, central IL, NSF-IMLCZO and NSF-CINet)
+#US-Kon (Konza prairie Ameriflux tower site)
+#For these datasets, this Github repository contains only the data needed for analyis
+#Please refer to following sites for the full datasets for each:
+#US-Kon: https://ameriflux.lbl.gov/sites/siteinfo/US-Kon
+#GC: https://www.hydroshare.org/resource/0ef3eda3534f44a6bbd65786d57222ea/
+
+
+# NDVI for GC site obtained from Modis at tower location
+
 import matplotlib.pyplot as plt
 import numpy as np
 import datetime as dt
@@ -15,8 +26,12 @@ from matplotlib.colors import ListedColormap
 data_folder='DATA/FluxTowers/'
 out_data_folder = 'DATA/Processed/'
 
-df = pd.read_csv(data_folder+'GC_FluxData_RAW_25m_042216_050224.csv')
+
+#%%
+df = pd.read_csv(data_folder+'Data_GCFluxTowerRAW_15min.csv')
+
 df['Date']=pd.to_datetime(df['NewDate'])
+
 
 dfGPP = pd.read_csv(data_folder+'GC_25m_REddyProc_Processed_30min_DaytimePartitioning.csv')
 dfGPPdates = pd.read_csv(data_folder+'ReddyProc_25m_Dates.csv')
@@ -46,10 +61,9 @@ df_m2 = df_NDVI_MOD2[['Date','NDVI']]
 dfMOD = pd.concat([df_m1, df_m2], axis=0).drop_duplicates('Date')
 dfMOD = dfMOD.set_index('Date')
 
+dfMOD_30min = dfMOD.resample('30T').interpolate(method='linear')
 
-dfMOD_1H = dfMOD.resample('30T').interpolate(method='linear')
-
-df = pd.merge(df,dfMOD_1H,on='Date',how='outer')
+df = pd.merge(df,dfMOD_30min,on='Date',how='outer')
 
 #%%
 
@@ -71,7 +85,7 @@ dfnew[colnames_drivers]=df[colnames_drivers]
 df = dfnew.set_index('Date')
 
 
-#set desired time range (if not whole dataframe)
+#set desired time range (if not whole dataframe - data from 2016 to end of 2022)
 start_date = dt.datetime(2016,4,15,0,0,0)
 end_date = dt.datetime(2022,12,31,0,0,0)
 
@@ -79,7 +93,7 @@ end_date = dt.datetime(2022,12,31,0,0,0)
 df = df.loc[df.index>start_date]
 df = df.loc[df.index<end_date]
 
-#growing season only, day time only
+#growing season only, day time only (9-5pm)
 df = df.loc[df.index.hour>=9]
 df = df.loc[df.index.hour<17]  
 
@@ -88,7 +102,6 @@ df = df.loc[df.index.month<=10]
 
 #drop 2020, too much missing data during pandemic spring  
 df = df[df.index.year !=2020]  
-
 
 
 df['LE']=np.where(df['LE']<0,np.nan,df['LE'])
@@ -136,9 +149,12 @@ df.to_csv(data_folder+'Data_GCFluxTower_30min.csv')
 
 #%% Konza Prairie Data
 
-
-dfK = pd.read_csv(data_folder+'AMF_US-Kon_FLUXNET_SUBSET_2004-2019_4-6/AMF_US-Kon_FLUXNET_SUBSET_HH_2004-2019_4-6.csv')
+dfK = pd.read_csv(data_folder+'Data_USKon_RAW30min.csv')
 dfK['Date']=pd.to_datetime(dfK['TIMESTAMP_START'], format='%Y%m%d%H%M')
+
+#%%
+
+
 
 
 dfK['NEE']=dfK['NEE_VUT_REF']
@@ -165,12 +181,10 @@ end_date = dt.datetime(2015,12,31,0,0,0)
 
 dfK = dfK.loc[dfK.index<end_date]
 
-
-
 dfK = dfK.loc[dfK.index.hour>=9]
 dfK = dfK.loc[dfK.index.hour<17]  
 
-dfK = dfK.loc[dfK.index.year != 2008]
+dfK = dfK.loc[dfK.index.year != 2008] #bad data in 2008
 
 
 dfK['B']=dfK['H_CORR']/dfK['LE']
@@ -178,6 +192,7 @@ dfK['B'] = np.where(dfK['B']>5,np.nan,dfK['B'])
 dfK['B'] = np.where(dfK['B']<0,np.nan,dfK['B'])
 
 
+#only consider points where solar radiation is above 200...
 dfK['short_up_Avg']=np.where(dfK['SW_IN_F']<200,np.nan,dfK['SW_IN_F'])
 
 
@@ -219,7 +234,7 @@ for i,c in enumerate(dfK.columns):
 dfK.to_csv(data_folder+'Data_KONFluxTower_30min.csv')
 
 
-#%% make a combined version
+#%% make a combined version - both US-Kon and GC data together for clustering
 
 colnames_responses = ['NEE','GPP','Reco','LE','B','WUE','site']
 colnames_drivers = ['DOY','T_tmpr_rh_mean','RH_tmpr_rh_mean','D5TE_VWC_5cm_Avg','D5TE_VWC_100cm_Avg','D5TE_T_5cm_Avg','D5TE_T_100cm_Avg', 'short_up_Avg','CO2_li_mean','NDVI']
@@ -244,7 +259,6 @@ plt.plot(dfK_mini['Reco'],'r')
 plt.title('Carbon fluxes US-Kon')
 
 combined_df = pd.concat([dfGC_mini, dfK_mini], axis=0)
-
 
 
 combined_df.to_csv(out_data_folder+'ProcessedData_GCKonTowers30min.csv')

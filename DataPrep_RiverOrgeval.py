@@ -38,21 +38,14 @@ for c in df_rivervars.columns:
     
 df = df_rivervars[colnames_keep]
 
-
-
 df = df.resample(res,on='Date').first()
 #df_rivervars['Date']=df_rivervars.index
 
 df = df.reset_index()
 
-
-
 #%%
 
-
 df_withnans = df.copy()
-
-
 
 #want to linearly interpolate gaps in each variable, up to 12 hours (24 half hour data points)
 for c in df.columns:

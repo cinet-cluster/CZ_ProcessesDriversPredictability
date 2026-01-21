@@ -4,6 +4,8 @@
 #  Code to pre-process data for riverlab case - concatenate datasets, gap fill, etc
 #  save dataframe as csv that is input into the GMM-PCA-IT framework
 
+# original data source: https://www.hydroshare.org/resource/2c6c1d02c3ec4b97a767c787e1889647/
+
 import matplotlib.pyplot as plt
 import numpy as np
 import datetime as dt
@@ -17,7 +19,9 @@ res = '30min'
 
 
 #%%
-df_fluxtower = pd.read_csv(fluxdata_folder+ 'FluxData_15min_2021_2022.csv')
+df_fluxtower = pd.read_csv(fluxdata_folder+ 'Data_GCFluxTowerRAW_15min.csv')
+
+df_fluxtower['Date']=df_fluxtower['NewDate']
 
 orig_df_fluxtower = df_fluxtower.copy()
 df_fluxtower = df_fluxtower[['Date','Precip_Tot','D5TE_VWC_5cm_Avg','D5TE_VWC_100cm_Avg','LE_li_wpl']]
@@ -46,11 +50,7 @@ for c in df_rivervars.columns:
 df_rivervars = df_rivervars.resample(res,on='Date').mean()
 #df_rivervars['Date']=df_rivervars.index
 
-df_ground = pd.read_csv(data_folder + 'cisco IL.csv')
-df_ground['Date'] = pd.to_datetime(df_ground['TIMESTAMP']).dt.tz_localize(None)
-df_ground = df_ground.drop_duplicates('Date')
-df_ground =df_ground.drop(labels=['method','TIMESTAMP'],axis=1)
-df_ground= df_ground.set_index('Date').resample(res).interpolate('linear')
+
 
 #%%
 df = pd.read_csv(data_folder + 'RiverineChemData_Monticello.csv')
@@ -77,7 +77,7 @@ df = df.merge(df_rivervars,on='Date',how='inner')
 #%% add 2022 data from Jinyu
 #units: 	mM	mM	mM	mM	mM	mM	mM	°Ê	FNU	m3/s
 
-df_2022 = pd.read_csv(data_folder + 'RL_2022_fromJinyu.csv')
+df_2022 = pd.read_csv(data_folder + 'RL_2022_add.csv')
 df_2022['Date']=pd.to_datetime(df_2022['timedate']).dt.tz_localize(None)
 
 df_2022['Chlorides']=df_2022['Chloride']
@@ -98,7 +98,6 @@ df = df.drop_duplicates(subset='Date')
 df = df.set_index('Date')
 
 
-df = df.merge(df_ground,on='Date',how='inner')
 
 #%%
 
@@ -172,7 +171,7 @@ for c in colnames_responses:
 
 #colnames_drivers = ['Discharge','Precip_1D','Precip_3D','Precip_7D','Precip_14D','D5TE_VWC_100cm_Avg','Temp_anomaly_14D','O2_anomaly_14D','Turbidity','GWE','Dissolved Oxygen','Temperature']
 
-colnames_drivers = ['Discharge','LogQ','Precip_1D','Precip_3D','Precip_7D','Precip_14D','D5TE_VWC_5cm_Avg','D5TE_VWC_100cm_Avg','Temp_anomaly_14D','Turbidity','GWE','Temperature','LE_li_wpl','LEsmooth','LogQ10']
+colnames_drivers = ['Discharge','LogQ','Precip_1D','Precip_3D','Precip_7D','Precip_14D','D5TE_VWC_5cm_Avg','D5TE_VWC_100cm_Avg','Temp_anomaly_14D','Turbidity','Temperature','LE_li_wpl','LEsmooth','LogQ10']
 
 dfnew = df[colnames_responses].copy()
 dfnew[colnames_loads]=df[colnames_loads]
