@@ -3,6 +3,8 @@
 
 # RiverLab Case: Monticello IL
 
+# Data source: https://www.hydroshare.org/resource/2c6c1d02c3ec4b97a767c787e1889647/
+
 
 # Initial setup 
 import matplotlib.pyplot as plt
@@ -47,11 +49,6 @@ colnames_drivers = ['LogQ','LogQ10','D5TE_VWC_100cm_Avg','D5TE_VWC_5cm_Avg','Tem
 
 labels_responses=['Ca','Mg','K','Na','Cl','NO3','SO4']
 labels_drivers = ['LQ','LQ10','VWCd','VWCs','Tw','Turb']
-
-# dfnew = df[colnames_responses].copy()
-# dfnew[colnames_drivers]=df[colnames_drivers]
-# df = dfnew
-# df_orig=df.copy()
 
 
 #%%  Set Options
@@ -527,21 +524,17 @@ plt.subplots_adjust(wspace=0, hspace=0)
 for i in range(1,nc+1): #loop through classes    
     df_small = df.loc[df['balance_idx']==i]
     
-    plt.subplot(3,1,1)
+    plt.subplot(2,1,1)
     plt.plot(pd.to_numeric(df_small['LogQ']),'.',color=cm(i),markersize=.2)
     plt.xlim([dt.datetime(2021,8,30,0,0,0), dt.datetime(2022,12,31,0,0,0)])  
     plt.xticks([])
     plt.yticks(fontsize=8,fontname='Arial')
-    plt.subplot(3,1,2)
+    plt.subplot(2,1,2)
     plt.plot(pd.to_numeric(df_small['Temperature']),'.',color=cm(i),markersize=.2)
     plt.xlim([dt.datetime(2021,8,30,0,0,0), dt.datetime(2022,12,31,0,0,0)]) 
     plt.yticks(fontsize=8,fontname='Arial')
     plt.xticks([])
-    plt.subplot(3,1,3)
-    plt.plot(pd.to_numeric(df_small['GWE']),'.',color=cm(i),markersize=.2)
-    plt.xlim([dt.datetime(2021,8,30,0,0,0), dt.datetime(2022,12,31,0,0,0)])
-    plt.yticks(fontsize=8,fontname='Arial')
-    plt.xticks(rotation=30,fontsize=8)
+
 
 
 plt.subplots_adjust(hspace=.2,wspace=0)
@@ -618,8 +611,6 @@ plt.savefig(figname+'_BvsCVratio.svg')
 
 
 plt.show()
-
-
 
 
 

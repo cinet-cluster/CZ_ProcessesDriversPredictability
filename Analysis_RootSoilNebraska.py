@@ -606,7 +606,7 @@ for c_ind,c in enumerate(colnames_responses):
 
     for i in range(1,nc+1): #loop through classes
         for m_ind,m in enumerate(range(4,11)): #loop trhough months
-            print(m)
+            
             df_small = df.loc[(df['balance_idx']==i) & (df.index.month==m)]
 
             monthlies[i-1,m_ind]=len(df_small)

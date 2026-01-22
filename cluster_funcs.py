@@ -48,7 +48,7 @@ def GMMfun(allvars_responses, nc, seed, plot_cov=0,labels=0):
     #inputs: matrix of time-series variables, number of clusters (nc), random seed
     
 
-    gmm_model = GaussianMixture(n_components=nc,random_state=seed, n_init=10)
+    gmm_model = GaussianMixture(n_components=nc,random_state=seed, n_init=3)
     
     features = 1e3*np.vstack(allvars_responses).T
     nfeatures = features.shape[1]
@@ -62,6 +62,7 @@ def GMMfun(allvars_responses, nc, seed, plot_cov=0,labels=0):
         for i in range(nc):
             plt.subplot(3, 4, i+1)
             C = gmm_model.covariances_[i, :, :]
+            #C = np.diag(gmm_model.covariances_[i])
             plt.pcolor(C, vmin=-max(abs(C.flatten())), vmax=max(abs(C.flatten())), cmap='RdBu')
             plt.gca().set_xticks(np.arange(0.5, nfeatures+0.5))
             plt.gca().set_xticklabels(labels, fontsize=12)
@@ -293,6 +294,7 @@ def infoFromDrivers(df, nc, ndrivers,colnames_drivers, labels_drivers, nbins, nT
             
             for j in range(ndrivers):
                 for k in range(ndrivers):
+                    #print(j,k,ndrivers)
                     if j >= k:
                         continue
                             
@@ -373,7 +375,7 @@ def infoFromDrivers(df, nc, ndrivers,colnames_drivers, labels_drivers, nbins, nT
     
 
 
-    return use_drivers, Itot_drivers, R_drivers, S_drivers, U1_drivers, U2_drivers
+    return use_drivers, Itot_drivers , R_drivers, S_drivers, U1_drivers, U2_drivers
 
 
 #function to compute Psys (system predictability based on PCA and IT), plot Psys for each cluster

@@ -55,12 +55,6 @@ labels_responses=['Fc','GPP','Reco','LE','B','WUE']
 labels_drivers = ['Rg','RH','Ts','Td','NDVI','VWCs','VWCd']
 labels_all = labels_responses + labels_drivers
 
-# dfnew = df[colnames_responses].copy()
-# dfnew[colnames_drivers]=df[colnames_drivers]
-# df_orig=df.copy() #save original data in original units
-# df = dfnew
-
-
 
 #%%  Set Options
 
@@ -106,7 +100,6 @@ for c in colnames_drivers:
     allvars_drivers.append(vect)
     X_drivers_scaled.append(scaler.fit_transform(vect))
 
-    
 
  
 allvars_all=[]
@@ -207,8 +200,6 @@ gmm_model, cluster_idx = cf.GMMfun(X_responses_scaled, nc, seed,1,labels_respons
 df['cluster_idx']=cluster_idx
 
 
-
-
 #%% PCA: driver and response system
 
 
@@ -259,17 +250,8 @@ dresults['Itot2_norm']=Itot_drivers[1,:]
 dresults['PCA_1']=pca_ordered_weights[:,1]
 dresults['PCA_2']=pca_ordered_weights[:,2]
 
-dresults['Red_1']=R_drivers[0,:]
-dresults['Red_2']=R_drivers[1,:]
-
-dresults['Syn_1']=S_drivers[0,:]
-dresults['Syn_2']=S_drivers[1,:]
-
-dresults['Utot_1']=U1_drivers[0,:]+U2_drivers[0,:]
-dresults['Utot_2']=U1_drivers[1,:]+U2_drivers[1,:]
 
 dresults.to_csv(figname+'Results.csv')
-
 
 
 #%% Plot of time-series variables, colored by cluster

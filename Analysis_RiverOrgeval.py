@@ -51,10 +51,6 @@ colnames_drivers = ['LogQ','TempRiver','Turbidity']
 labels_responses=['Ca','Mg','K','Na','Cl','NO3','SO4']
 labels_drivers = ['LQ','Tw','Turb']
 
-# dfnew = df[colnames_responses].copy()
-# dfnew[colnames_drivers]=df[colnames_drivers]
-# df = dfnew
-# df_orig=df.copy()
 
 
 #%%  Set Options
@@ -641,7 +637,7 @@ for i,data in enumerate(varmatrix):
     
     
     
-    plt.hlines(i*2,xmin=dt.datetime(2021,8,30,0,0,0), xmax = dt.datetime(2022,12,1,0,0,0),color='k',linewidth=.5)
+    plt.hlines(i*2,xmin=dt.datetime(2015,5,30,0,0,0), xmax = dt.datetime(2016,12,1,0,0,0),color='k',linewidth=.5)
     plt.plot(df.index, i*2 + G * data,'.',markersize=.2,color=colors[i])
     
     maxval = np.max(i*2+G*data) 
