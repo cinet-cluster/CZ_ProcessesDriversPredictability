@@ -1,5 +1,7 @@
 # **CZ_ProcessesDriversPredictability**
 
+[![DOI](https://zenodo.org/badge/954887473.svg)](https://doi.org/10.5281/zenodo.18927467)
+
 **Goodwell et al., 2026**  
 📧 *goodwel2@illinois.edu*
 
