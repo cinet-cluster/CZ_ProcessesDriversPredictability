@@ -11,7 +11,7 @@ This repository contains code and datasets associated with the manuscript:
 
 > **“Detecting regimes of critical zone processes, drivers, and predictability with a data-driven framework”**
 
-📄 *In review at* **AGU Advances** *(January 2026)*
+📄 *Accepted at * **AGU Advances** *(March 2026)*
 
 ---
 
@@ -44,10 +44,10 @@ This codebase implements a **data-driven framework** for identifying and interpr
    - Identifies distinct *temporal regimes* in multivariate datasets.
 
 2. **Principal Component Analysis (PCA)**  
-   - Characterizes dominant modes of variability within each regime, and uses explained variances toward a "potential predictability" metric for each cluster.
+   - Characterizes dominant modes of variability within each regime. Explained variances of first two principal components go toward a "potential predictability" metric for each cluster.
 
 3. **Information Theory (IT) metrics**  
-   - Applied to PC projections to identify **dominant predictors** of CZ dynamics in each cluster, or for a dataset
+   - Applied to PC projections to identify **dominant predictors** of CZ dynamics in each cluster, or for a given dataset.  Dominant predictors are defined as the two time-series variables that jointly reduce the most uncertainty in either principal component projection (which represents the reduced response system dynamics).
 
 ## **Repository Structure**
 
@@ -70,6 +70,9 @@ This codebase implements a **data-driven framework** for identifying and interpr
   - Information theory metrics
   - Figure generation
 - Imported by all analysis scripts.
+
+### 📊 `DataPrep_*.py`
+- Case-study–specific data preparation scripts that concatenate, do minor gap-filling, and align time-series data for input into the GMM-PCA-IT analysis codes.
 
 ### 📊 `Analysis_*.py`
 - Case-study–specific analysis scripts, including:
